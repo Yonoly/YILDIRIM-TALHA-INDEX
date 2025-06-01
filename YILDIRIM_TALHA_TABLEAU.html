@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tableau de Bord</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #283e51, #485563);
+      padding: 20px;
+      margin: 0;
+      color: #f0f0f0;
+    }
+    h1 {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      color: #ffd700;
+      text-shadow: 1px 1px 5px #000;
+      margin-bottom: 30px;
+    }
+    .etat {
+      margin-bottom: 10px;
+    }
+    .etat-A { background-color: #ffb74d; }
+    .etat-B { background-color: #4db6ac; }
+    .etat-C { background-color: #81c784; }
+    .etat-D { background-color: #64b5f6; }
+    .etat-E { background-color: #e57373; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1c2733;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      border: none;
+      padding: 15px 20px;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    th {
+      background-color: #222f3e;
+      color: #ffd700;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    tbody tr:hover {
+      background-color: #33475b;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .etat-badges button {
+      border: none;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-right: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      background-color: #ffd700;
+      color: #1c2733;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      transition: background-color 0.3s ease;
+    }
+    .etat-badges button:hover {
+      background-color: #ffca28;
+    }
+  </style>
+</head>
+<body>
+  <h1>📋 Tableau de Bord des Projets</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Titre</th>
+        <th>Détails</th>
+        <th>Démarrage</th>
+        <th>Deadline</th>
+        <th>Priorité</th>
+        <th>Catégorie</th>
+        <th>Statut</th>
+      </tr>
+    </thead>
+    <tbody id="listeActions"></tbody>
+  </table>
+
+  <script>
+    const urgences = [
+      { id: "1", nom: "Urgent" },
+      { id: "2", nom: "Important" },
+      { id: "3", nom: "Standard" },
+      { id: "4", nom: "Bas" },
+      { id: "5", nom: "Optionnel" }
+    ];
+    const domaines = [
+      { id: "1", nom: "Personnel" },
+      { id: "2", nom: "Professionnel" },
+      { id: "3", nom: "Formation" },
+      { id: "4", nom: "Organisation" },
+      { id: "5", nom: "Divers" }
+    ];
+    const etapesAvancee = [
+      { etapeId: "A", nom: "Planifié", classe: "etat-A", emoji: "📅" },
+      { etapeId: "B", nom: "En cours", classe: "etat-B", emoji: "🏁" },
+      { etapeId: "C", nom: "Terminé", classe: "etat-C", emoji: "🏆" },
+      { etapeId: "D", nom: "En pause", classe: "etat-D", emoji: "❄️" },
+      { etapeId: "E", nom: "Annulé", classe: "etat-E", emoji: "🗑️" }
+    ];
+
+    const listeActions = JSON.parse(localStorage.getItem("suiviActions")) || [];
+
+    const tbody = document.getElementById("listeActions");
+    listeActions.forEach(a => {
+      const urgence = urgences.find(u => u.id === a.urgence)?.nom || "N/A";
+      const domaine = domaines.find(d => d.id === a.domaine)?.nom || "N/A";
+      const etat = etapesAvancee.find(e => e.etapeId === a.progression);
+
+      tbody.innerHTML += `
+        <tr class="${etat?.classe}">
+          <td>${a.id}</td>
+          <td>${a.titre}</td>
+          <td>${a.contenu}</td>
+          <td>${a.debut}</td>
+          <td>${a.fin}</td>
+          <td>${urgence}</td>
+          <td>${domaine}</td>
+          <td>${etat?.emoji} ${etat?.nom}</td>
+        </tr>
+      `;
+    });
+  </script>
+</body>
+</html>
