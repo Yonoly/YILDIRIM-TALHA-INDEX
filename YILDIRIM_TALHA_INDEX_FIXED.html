@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Ajouter une Tâche</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&amp;family=Lato&amp;display=swap" rel="stylesheet"/>
+<style>
+    body {
+      font-family: 'Lato', sans-serif;
+      background-color: #e9ecef;
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+    }
+
+    header, footer {
+      text-align: center;
+      background-color: #34495e;
+      color: #ecf0f1;
+      padding: 20px 0;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 50px auto;
+      background-color: #ffffff;
+      padding: 35px;
+      border-radius: 16px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    label {
+      display: block;
+      margin: 22px 0 10px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #ced4da;
+      border-radius: 10px;
+      font-size: 1rem;
+      background-color: #fafafa;
+      transition: border-color 0.2s;
+      font-family: 'Lato', sans-serif;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #2980b9;
+      outline: none;
+      background-color: #fff;
+    }
+
+    button {
+      width: 100%;
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 35px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.25s ease-in-out;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    button:hover {
+      background-color: #1c5980;
+    }
+
+    a {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #34495e;
+      transition: color 0.2s;
+      font-family: 'Lato', sans-serif;
+    }
+
+    a:hover {
+      color: #2980b9;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 0.95rem;
+      font-family: 'Lato', sans-serif;
+    }
+  </style>
+</head>
+<body>
+<header>
+<h1>🚀 Nouvelle Tâche à Ajouter</h1>
+</header>
+<main>
+<form id="formAction">
+<label for="titre">Titre de la tâche *</label>
+<input id="titre" placeholder="Ex : Préparer les documents" required="" type="text"/>
+<label for="contenu">Description détaillée *</label>
+<textarea id="contenu" placeholder="Détaillez les étapes à suivre..." required="" rows="3"></textarea>
+<label for="debut">Date de début *</label>
+<input id="debut" required="" type="date"/>
+<label for="fin">Date limite *</label>
+<input id="fin" required="" type="date"/>
+<label for="importance">Priorité *</label>
+<select id="importance" required=""></select>
+<label for="categorie">Catégorie *</label>
+<select id="categorie" required=""></select>
+<label for="progression">Statut *</label>
+<select id="progression" required=""></select>
+<button onclick="enregistrerAction()" type="button">Ajouter la tâche</button>
+</form>
+<a href="YILDIRIM_TALHA_TABLEAU.html">📊 Voir le tableau de suivi</a>
+</main>
+<footer>
+    © 2025 - Système Personnalisé de Gestion des Tâches
+  </footer>
+<script>
+    const urgences = [
+      { id: "1", nom: "Immédiat" },
+      { id: "2", nom: "Prioritaire" },
+      { id: "3", nom: "Normal" },
+      { id: "4", nom: "Faible" },
+      { id: "5", nom: "Optionnel" }
+    ];
+    const domaines = [
+      { id: "1", nom: "Personnel" },
+      { id: "2", nom: "Professionnel" },
+      { id: "3", nom: "Formation" },
+      { id: "4", nom: "Organisationnel" },
+      { id: "5", nom: "Autres" }
+    ];
+    const etapesAvancee = [
+      { etapeId: "A", nom: "Planifiée" },
+      { etapeId: "B", nom: "Démarrée" },
+      { etapeId: "C", nom: "Achevée" },
+      { etapeId: "D", nom: "Gelée temporairement" },
+      { etapeId: "E", nom: "Abandonnée" }
+    ];
+    function remplir(id, options) {
+      const select = document.getElementById(id);
+      select.innerHTML = '<option value="">-- Choisir --</option>';
+      options.forEach(opt => {
+        const value = opt.id || opt.etapeId;
+        select.innerHTML += `<option value="${value}">${opt.nom}</option>`;
+      });
+    }
+    remplir("importance", urgences);
+    remplir("categorie", domaines);
+    remplir("progression", etapesAvancee);
+
+    function enregistrerAction() {
+      const form = document.getElementById("formAction");
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      const actions = JSON.parse(localStorage.getItem("suiviActions")) || [];
+      const nouvelle = {
+        id: (actions.length + 1).toString(),
+        titre: document.getElementById("titre").value,
+        contenu: document.getElementById("contenu").value,
+        debut: document.getElementById("debut").value,
+        fin: document.getElementById("fin").value,
+        urgence: document.getElementById("importance").value,
+        domaine: document.getElementById("categorie").value,
+        progression: document.getElementById("progression").value
+      };
+      actions.push(nouvelle);
+      localStorage.setItem("suiviActions", JSON.stringify(actions));
+      form.reset();
+    }
+  </script>
+</body>
+</html>
